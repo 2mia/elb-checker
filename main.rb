@@ -49,8 +49,8 @@ end
 
 #------------------------------------
 def isUp(ip)
-  needle = "openresty"
-  output = `curl -s -H 'Connection: close' --connect-timeout 3 -m 4 #{ip}/version -I 2>&1`
+  needle = "APIP"
+  output = `curl -k -s -H 'Connection: close' --connect-timeout 3 -m 4 https://#{ip}/health-check -I 2>&1`
   if output.include? needle
     true
   else
