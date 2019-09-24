@@ -31,7 +31,7 @@ end
 get '/check/:host' do
   content_type :json
   if ips[params[:host]]
-    ips[params[:host]].map {|ip| {ip => isUp(ip)}}.to_json
+    ips[params[:host]].map {|ip| {ip => isUp(ip, params[:host])}}.to_json
   else
     {}.to_json
   end
@@ -48,13 +48,13 @@ get '/is-up/:ip' do
 end
 
 #------------------------------------
-def isUp(ip)
+def isUp(ip, host)
   needle = "APIP"
   output = `curl -k -s -H 'Connection: close' --connect-timeout 3 -m 4 https://#{ip}/health-check -I 2>&1`
   if output.include? needle
     true
   else
-    puts "XXX: #{ip} #{output}"
+    puts "WARN: elb-check: host=#{host}  ip=#{ip} #{output}"
     output
   end
 end
